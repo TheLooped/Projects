@@ -1,11 +1,22 @@
 use conv for std::conv
-use fmt for std::fmt
 use exit for std::process::{exit}
+use fmt for std::fmt
 use io for std::io
 
 use std::math::rand::{Rand}
 use std::time::{Time}
 use std::thread::{Thread}
+
+static mut limit: i64 = 50
+
+// TODO:
+// - new game feature [x]
+// - restart on Correct [x]
+// - save limit [x]
+// - score []
+// - lives []
+// - add colors (via colorify) []
+// - refactor [...]
 
 fn readln(): str {
     let scanner = io::Scanner.newf(io::stdin())
@@ -22,77 +33,78 @@ fn parse_input(msg: str): (i64, ok: bool) {
         ret num, ok
 }
 
-// TODO:
-// - new game feature [x]
-// - restart on Correct [x]
-// - save limit []
-// - score []
-// - lives []
-// - add colors (via colorify) []
-// - refactor []
+fn set_limit() {
+    fmt::println("Enter a number for the limit (press Enter to use default 50)\n");
 
-fn game () {
-    let mut limit : int
-    let mut rand = Rand.new(Time.now().unix())
-
-    fmt::println("What would you like the limit to be?")
-
-    let (limit, ok) = parse_input("Enter a number: ")
-    if !ok {
-        fmt::println("Not a number")
-        exit(1)
+    let (new_limit, ok) = parse_input("Enter a number: ");
+    if ok {
+        limit = new_limit; // Set the limit to the entered number
+    } else {
+        fmt::println("Using default limit: 50");
+        limit = 50; // Default limit
     }
+}
+
+fn contine_game() {
+    fmt::print("Would you like to play again? (y/n) ")
+
+    let choice = readln()
+    if choice == "y" {
+        fmt::println("Ok, let's play")
+        game()
+    } else if choice == "n" {
+        fmt::println("Bye")
+        exit(0)
+    } else {
+        fmt::println("Not a valid choice")
+        new_game()
+    }
+}
+fn game () {
+    let mut rand = Rand.new(Time.now().unix())
 
     let randNum = rand.nextn63(limit) + 1
 
     for {
         let (guess, ok) = parse_input("What's your guess: ")
             if guess == randNum && ok {
-                fmt::println("Correct")
-
-                fmt::print("Would you like to play again? (y/n) ")
-                let choice = readln()
-                if choice == "y" {
-                    fmt::println("Ok, let's play")
-                    game()
-                } else if choice == "n" {
-                    fmt::println("Bye")
-                    exit(0)
-                } else {
-                    fmt::println("Not a valid choice")
-                }
+                fmt::println("Correct\n")
+                contine_game()
             } else if guess < randNum && ok {
-                fmt::println("Too low")
+                fmt::println("Too low\n")
             } else if guess > randNum && ok {
-                fmt::println("Too high")
+                fmt::println("Too high\n")
             } else {
-                fmt::println("Not a number")
+                fmt::println("Not a number\n")
             }
 
-        fmt::println(randNum)
+        //fmt::println(randNum)
+        //fmt::println(limit)
     }
 }
 
 fn new_game () {
-        fmt::println("Welcome To the Guessing Game")
-        fmt::print("Would you like to play? (y/n) ")
 
-        let choice = readln()
+    fmt::print("Would you like to play? (y/n) ")
 
-        if choice == "y" {
-            fmt::println("Ok, let's play")
-                game()
-            } else if choice == "n" {
-                fmt::println("Bye")
-                exit(0)
-            } else {
-                fmt::println("Not a valid choice")
-                fmt::print("Would you like to play? (y/n) ")
-            }
+    let choice = readln()
+
+    if choice == "y" {
+        fmt::println("Ok, let's play\n")
+        set_limit()
+        game()
+    } else if choice == "n" {
+        fmt::println("Bye")
+        exit(0)
+    } else {
+        fmt::println("Not a valid choice\n")
+        new_game()
+    }
 }
 
 
 fn main () {
+    fmt::println("Welcome To the Guessing Game \n")
     new_game()
 }
 
