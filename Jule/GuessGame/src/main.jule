@@ -1,0 +1,99 @@
+use conv for std::conv
+use fmt for std::fmt
+use exit for std::process::{exit}
+use io for std::io
+
+use std::math::rand::{Rand}
+use std::time::{Time}
+use std::thread::{Thread}
+
+fn readln(): str {
+    let scanner = io::Scanner.newf(io::stdin())
+        ret if (scanner.scan() else { use false }) { scanner.text() } else { "" }
+}
+
+
+fn parse_input(msg: str): (i64, ok: bool) {
+    fmt::print(msg)
+        let input = readln()
+
+        let (num, err) = conv::parse_int(input, 10, 64)
+        ok = err == conv::ConvError.Ok
+        ret num, ok
+}
+
+// TODO:
+// - new game feature [x]
+// - restart on Correct [x]
+// - save limit []
+// - score []
+// - lives []
+// - add colors (via colorify) []
+// - refactor []
+
+fn game () {
+    let mut limit : int
+    let mut rand = Rand.new(Time.now().unix())
+
+    fmt::println("What would you like the limit to be?")
+
+    let (limit, ok) = parse_input("Enter a number: ")
+    if !ok {
+        fmt::println("Not a number")
+        exit(1)
+    }
+
+    let randNum = rand.nextn63(limit) + 1
+
+    for {
+        let (guess, ok) = parse_input("What's your guess: ")
+            if guess == randNum && ok {
+                fmt::println("Correct")
+
+                fmt::print("Would you like to play again? (y/n) ")
+                let choice = readln()
+                if choice == "y" {
+                    fmt::println("Ok, let's play")
+                    game()
+                } else if choice == "n" {
+                    fmt::println("Bye")
+                    exit(0)
+                } else {
+                    fmt::println("Not a valid choice")
+                }
+            } else if guess < randNum && ok {
+                fmt::println("Too low")
+            } else if guess > randNum && ok {
+                fmt::println("Too high")
+            } else {
+                fmt::println("Not a number")
+            }
+
+        fmt::println(randNum)
+    }
+}
+
+fn new_game () {
+        fmt::println("Welcome To the Guessing Game")
+        fmt::print("Would you like to play? (y/n) ")
+
+        let choice = readln()
+
+        if choice == "y" {
+            fmt::println("Ok, let's play")
+                game()
+            } else if choice == "n" {
+                fmt::println("Bye")
+                exit(0)
+            } else {
+                fmt::println("Not a valid choice")
+                fmt::print("Would you like to play? (y/n) ")
+            }
+}
+
+
+fn main () {
+    new_game()
+}
+
+
