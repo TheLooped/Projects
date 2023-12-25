@@ -1,0 +1,31 @@
+struct Stack {
+    top: int
+    stack: []int
+}
+
+impl Stack {
+    static fn new(): Stack {
+        ret Stack{
+            top: -1,
+            stack: []
+        }
+    }
+    fn push(mut self, mut stack: Stack, mut val: int): Stack {
+    let mut top = stack.top + 1
+    let mut stck = append(stack.stack, val)
+
+    ret Stack {
+        top: top,
+        stack: stck
+        }
+    }
+}
+
+fn main(){
+    let mut stack = Stack.new()
+
+    stack = stack.push(stack, 1)
+    stack = stack.push(stack, 2)
+
+    outln(stack)
+}
