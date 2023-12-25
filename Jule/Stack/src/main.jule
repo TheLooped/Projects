@@ -1,3 +1,5 @@
+use fmt for std::fmt
+
 struct Stack {
     top: int
     stack: []int
@@ -19,6 +21,11 @@ impl Stack {
         stack: stck
         }
     }
+
+    fn peek(mut self, mut stack: Stack): int {
+        let val = stack.stack[stack.top]
+        ret val
+    }
 }
 
 fn main(){
@@ -26,6 +33,9 @@ fn main(){
 
     stack = stack.push(stack, 1)
     stack = stack.push(stack, 2)
-
+    stack = stack.push(stack, 3)
+    outln("Initial stack")
     outln(stack)
+
+    fmt::printf("Top element: {}\n", stack.peek(stack))
 }
